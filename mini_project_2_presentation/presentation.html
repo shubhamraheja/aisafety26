@@ -6,6 +6,7 @@
 <title>AI Safety Mini Project 2</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/white.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&family=Source+Serif+4:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -369,9 +370,11 @@
 .reveal .progress { color: var(--tuebingen-red); height: 3px; }
 .reveal .slide-number {
   font-family: 'Source Sans 3', sans-serif;
-  font-size: 12px;
+  font-size: 22px;
   color: var(--tuebingen-gray);
   background: transparent;
+  left: 12px;
+  right: auto;
 }
 </style>
 </head>
@@ -593,7 +596,7 @@
   <h3>Detection</h3>
   <div class="wm-formula">
     Detector recomputes the same green list at each token position.<br>
-    One-sided z-test: <strong>z = (G &minus; &gamma;T) / &radic;(T&gamma;(1&minus;&gamma;))</strong>, <strong>p = P(Z &ge; z)</strong>
+    One-sided z-test: <span id="ztest-formula" style="display:inline-block; margin-top:14px;"></span>
   </div>
 
   <div class="method-badge">100 Dolly prompts &middot; Qwen3-4B &middot; enable_thinking=False</div>
@@ -749,6 +752,14 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script>
+katex.render(
+  "z = \\dfrac{G - \\gamma T}{\\sqrt{T\\gamma(1-\\gamma)}}, \\quad p = P(Z \\ge z)",
+  document.getElementById('ztest-formula'),
+  { throwOnError: false }
+);
+</script>
 <script>
 Reveal.initialize({
   hash: true,
