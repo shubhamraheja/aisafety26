@@ -288,13 +288,12 @@
 
   <div class="example-cards">
     <div class="example-card"><span class="ex-num">1</span> Institutional docs: exam candidate lists, competition results with full names, recruitment letters. Technically public but not intended to end up in a training dataset.</div>
-    <div class="example-card"><span class="ex-num">2</span> Non-English documents with no language metadata: pregnancy warning article (Amharic), Christian music newsletter (Chinese), Arabic, Bulgarian.</div>
+    <div class="example-card"><span class="ex-num">2</span> Non-English documents with no language metadata: pregnancy warning article (Amharic), Christian music newsletter (Chinese).</div>
     <div class="example-card"><span class="ex-num">3</span> Per-source skew: FineWeb mostly news &amp; blogs; C4 commercial (ads, product pages); FinePDFs 50%+ legal/government</div>
   </div>
 
   <div class="insight-box">
-    <strong>Pattern:</strong> Datasets pick up far more than stated purpose. Administrative data that are public but contain real people's personal details and were probably not intended to be part of a training dataset. Heuristic cleaning misses institutional documents and language metadata.
-  </div>
+    <strong>Pattern:</strong> The range of content was wider than expected. These annotations are also subjective; a different annotator may reach different conclusions, particularly for borderline cases such as whether a public figure's name counts as private information.  </div>
 </section>
 
 <!-- SLIDE 4: PRIVACY FILTER PERFORMANCE -->
@@ -336,7 +335,6 @@
 <!-- SLIDE 5: REAL CASES & LIMITATIONS -->
 <section data-transition="none">
   <div class="section-label">Part 1.1 & 1.2</div>
-  <h2>Real Cases & Critical Gaps</h2>
 
   <h3>Manually Flagged Private (9) & Harmful (2)</h3>
   <div class="example-cards">
@@ -347,7 +345,7 @@
     <div class="example-card"><span class="ex-num">H</span> Gambling promotion page (RedPajama)</div>
   </div>
 
-  <h3>Critical Limitations</h3>
+  <!-- <h3>Critical Limitations</h3> -->
   <ul class="data-bullets">
     <li><strong>No false negatives in sample.</strong> This does not mean the model is perfect because our sample size is very small.</li>
     <li><strong>No harm detection:</strong> Filter only flags PII. Harmful content not caught (2 samples undetected)</li>
@@ -362,9 +360,9 @@
 <!-- SLIDE 6: CONCLUSIONS & RECOMMENDATIONS -->
 <section data-transition="none">
   <div class="section-label">Part 1.1 & 1.2</div>
-  <h2>Conclusions & Recommendations</h2>
+  <h2>Conclusions</h2>
 
-  <h3>Key Takeaways</h3>
+  <!-- <h3>Key Takeaways</h3> -->
   <ul class="data-bullets">
     <li><strong>Data quality low:</strong> Mean 4.5/10, half requires cleaning</li>
     <li><strong>Privacy leaks in PDFs:</strong> Institutional documents slip through</li>
@@ -373,13 +371,6 @@
     <li><strong>Unexpected diversity:</strong> Different per-source distributions, multilingual unlabeled</li>
   </ul>
 
-  <h3>For Better Curation</h3>
-  <ul class="data-bullets">
-    <li><strong>Multi-tier approach:</strong> Automated flagging + manual review + dataset policies</li>
-    <li><strong>Separate harm classifiers:</strong> Privacy filter only catches PII</li>
-    <li><strong>Language metadata:</strong> Flag non-English samples explicitly</li>
-    <li><strong>Source audit:</strong> Different sources have different failure modes</li>
-  </ul>
 
   <div class="insight-box">
     <strong>Bottom line:</strong> Hand-inspection reveals nuances automated tools miss: institutional leakage, harmful content, annotation subjectivity. PII detection alone is not enough for pretraining. Curation requires both automation and human judgment.
