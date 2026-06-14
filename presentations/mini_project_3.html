@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Safety Mini Project 3 - Part 1</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/white.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&family=Source+Serif+4:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --tuebingen-red: #A51E37;
+  --tuebingen-dark: #1a1a2e;
+  --tuebingen-gray: #4a4a5a;
+  --tuebingen-light: #f7f7fa;
+  --tuebingen-blue: #2c3e6b;
+  --privacy-color: #e74c3c;
+  --harmful-color: #f39c12;
+  --quality-color: #27ae60;
+}
+
+.reveal {
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 28px;
+  color: var(--tuebingen-dark);
+}
+.reveal .slides { text-align: left; }
+.reveal .slides section { padding: 30px 50px; }
+
+.reveal h1, .reveal h2, .reveal h3 {
+  font-family: 'Source Serif 4', serif;
+  color: var(--tuebingen-dark);
+  text-transform: none;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.reveal h1 { font-size: 1.6em; font-weight: 700; }
+.reveal h2 { font-size: 1em; font-weight: 600; margin-bottom: 0.4em; }
+.reveal h3 { font-size: 1.05em; font-weight: 600; color: var(--tuebingen-red); margin-bottom: 0.3em; }
+.reveal code { font-family: 'JetBrains Mono', monospace; }
+
+.title-slide {
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center !important;
+  height: 100%;
+  padding: 0 !important;
+  box-sizing: border-box;
+}
+.title-slide h1 {
+  font-size: 2.6em;
+  margin-bottom: 0.1em;
+  color: var(--tuebingen-dark);
+}
+.title-slide .subtitle {
+  font-size: 1.1em;
+  color: var(--tuebingen-gray);
+  margin-top: 0.3em;
+  font-weight: 300;
+}
+.title-slide .authors {
+  margin-top: 1.8em;
+  font-size: 0.85em;
+  color: var(--tuebingen-gray);
+  letter-spacing: 0.04em;
+}
+.title-slide .uni-badge {
+  margin-top: 2em;
+  padding: 6px 20px;
+  border: 1.5px solid var(--tuebingen-red);
+  border-radius: 4px;
+  font-size: 0.65em;
+  color: var(--tuebingen-red);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.section-label {
+  display: inline-block;
+  font-size: 0.55em;
+  font-weight: 600;
+  color: var(--tuebingen-red);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 0.3em;
+  padding: 3px 10px;
+  background: rgba(165, 30, 55, 0.07);
+  border-radius: 3px;
+}
+
+.stat-row {
+  display: flex;
+  gap: 16px;
+  margin: 16px 0 10px 0;
+  flex-wrap: wrap;
+}
+.stat-card {
+  flex: 1;
+  min-width: 140px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+.stat-card.privacy { background: rgba(231,76,60,0.06); border-color: rgba(231,76,60,0.12); }
+.stat-card.harmful { background: rgba(243,156,18,0.06); border-color: rgba(243,156,18,0.12); }
+.stat-card.quality { background: rgba(39,174,96,0.06); border-color: rgba(39,174,96,0.12); }
+.stat-card .label { font-size: 0.55em; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px; }
+.stat-card.privacy .label { color: var(--privacy-color); }
+.stat-card.harmful .label { color: var(--harmful-color); }
+.stat-card.quality .label { color: var(--quality-color); }
+.stat-card .big-num { font-family: 'Source Serif 4', serif; font-size: 1.5em; font-weight: 700; line-height: 1; }
+.stat-card.privacy .big-num { color: var(--privacy-color); }
+.stat-card.harmful .big-num { color: var(--harmful-color); }
+.stat-card.quality .big-num { color: var(--quality-color); }
+.stat-card .detail { font-size: 0.48em; color: var(--tuebingen-gray); margin-top: 4px; line-height: 1.3; }
+
+.insight-box {
+  background: var(--tuebingen-light);
+  border-left: 3px solid var(--tuebingen-red);
+  padding: 12px 16px;
+  font-size: 0.7em;
+  color: var(--tuebingen-gray);
+  border-radius: 0 6px 6px 0;
+  margin-top: 12px;
+  line-height: 1.5;
+}
+.insight-box strong { color: var(--tuebingen-dark); }
+
+.method-badge {
+  display: inline-block;
+  background: rgba(44,62,107,0.08);
+  color: var(--tuebingen-blue);
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.6em;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.data-table-wrap { overflow-x: auto; margin: 10px 0; }
+.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.68em;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+}
+.data-table thead th {
+  background: var(--tuebingen-dark);
+  color: #fff;
+  padding: 10px 14px;
+  font-weight: 600;
+  text-align: left;
+  font-size: 0.9em;
+}
+.data-table tbody td {
+  padding: 8px 14px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.data-table .count-cell { font-weight: 700; text-align: center; }
+.data-table tbody tr:nth-child(even) td { background: rgba(0,0,0,0.015); }
+
+.example-cards { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.example-card {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.07);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 0.62em;
+  line-height: 1.5;
+  color: var(--tuebingen-gray);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.ex-num {
+  display: inline-block;
+  width: 18px; height: 18px; line-height: 18px;
+  text-align: center; border-radius: 50%;
+  background: var(--tuebingen-red); color: #fff;
+  font-size: 0.8em; font-weight: 700; margin-right: 6px;
+}
+.highlight {
+  background: rgba(231,76,60,0.1);
+  color: var(--privacy-color);
+  font-weight: 600;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 0.95em;
+}
+
+.data-bullets {
+  font-size: 0.72em;
+  line-height: 1.7;
+  color: var(--tuebingen-dark);
+  margin: 8px 0;
+  padding-left: 1.2em;
+}
+.data-bullets li { margin-bottom: 5px; }
+.data-bullets li::marker { color: var(--tuebingen-red); }
+
+.reveal .progress { color: var(--tuebingen-red); height: 3px; }
+.reveal .slide-number {
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 22px;
+  color: var(--tuebingen-gray);
+  background: transparent;
+  left: 12px;
+}
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- SLIDE 1: TITLE -->
+<section class="title-slide" data-transition="none">
+  <h1>AI Safety Mini Project 3</h1>
+  <div class="subtitle">Part 1: Privacy Detection in Pretraining Datasets</div>
+  <div class="authors">Kavyanjali &middot; Irem &middot; Shubham</div>
+  <div class="uni-badge">Universit&auml;t T&uuml;bingen</div>
+</section>
+
+<!-- SLIDE 2: METHODOLOGY & KEY FINDINGS -->
+<section data-transition="none">
+  <div class="section-label">Part 1.1 & 1.2</div>
+  <h2>Annotating 124 Pretraining Samples</h2>
+  
+  <h3>Setup</h3>
+  <div class="method-badge">124 samples &middot; 4 datasets &middot; Manual annotation + automated detection</div>
+  <ul class="data-bullets">
+    <li><strong>FineWeb, FinePDFs, C4, RedPajama</strong>, sampled using streaming</li>
+    <li><strong>Annotations:</strong> dataset source, document index, topic, quality (1–10), correctly cleaned from HTML/PDF, private/harmful flags</li>
+  </ul>
+
+  <h3>Data Analysis Results</h3>
+  <div class="stat-row">
+    <div class="stat-card quality">
+      <div class="label">Average Quality</div>
+      <div class="big-num">4.5/10</div>
+      <div class="detail">Fairly consistent across datasets</div>
+    </div>
+    <div class="stat-card quality">
+      <div class="label">Correctly Cleaned</div>
+      <div class="big-num">60%</div>
+      <div class="detail">32% partial, 7% not cleaned</div>
+    </div>
+    <div class="stat-card privacy">
+      <div class="label">Private Info</div>
+      <div class="big-num">7.3%</div>
+      <div class="detail">9 of 124 samples</div>
+    </div>
+    <div class="stat-card harmful">
+      <div class="label">Harmful Content</div>
+      <div class="big-num">1.6%</div>
+      <div class="detail">2 of 124 samples</div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <strong>Quality:</strong> Only 10 samples (8%) scored 7+; 31 (25%) scored 3 or below. Per-dataset: FineWeb (4.7), FinePDFs (4.3), C4 (4.3), RedPajama (4.7).<br>
+    <strong>Cleaning:</strong> Most common issue was leftover HTML table formatting (pipe characters). Documents sometimes started mid-sentence, suggesting crawler picked up replies rather than full documents.
+  </div>
+</section>
+
+<!-- SLIDE 3: CONTENT ANALYSIS -->
+<section data-transition="none">
+  <div class="section-label">Part 1.1</div>
+  <h2>What's Actually in the Data?</h2>
+  <div class="data-table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr><th>Category</th><th style="text-align:center">Count</th><th style="text-align:center">%</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Blog posts</td><td class="count-cell">38</td><td class="count-cell">31%</td><td>Forums, personal</td></tr>
+        <tr><td>News articles</td><td class="count-cell">24</td><td class="count-cell">19%</td><td>Published</td></tr>
+        <tr><td>Legal/Gov docs</td><td class="count-cell">16</td><td class="count-cell">13%</td><td>Most private</td></tr>
+        <tr><td>Product pages</td><td class="count-cell">11</td><td class="count-cell">9%</td><td>Ads, specs</td></tr>
+        <tr><td>Other</td><td class="count-cell">35</td><td class="count-cell">28%</td><td>Tech, academic</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="example-cards">
+    <div class="example-card"><span class="ex-num">1</span> Institutional docs: exam candidate lists, competition results with full names, recruitment letters. Technically public but not intended to end up in a training dataset.</div>
+    <div class="example-card"><span class="ex-num">2</span> Non-English documents with no language metadata: pregnancy warning article (Amharic), Christian music newsletter (Chinese), Arabic, Bulgarian.</div>
+    <div class="example-card"><span class="ex-num">3</span> Per-source skew: FineWeb mostly news &amp; blogs; C4 commercial (ads, product pages); FinePDFs 50%+ legal/government</div>
+  </div>
+
+  <div class="insight-box">
+    <strong>Pattern:</strong> Datasets pick up far more than stated purpose. Administrative data that are public but contain real people's personal details and were probably not intended to be part of a training dataset. Heuristic cleaning misses institutional documents and language metadata.
+  </div>
+</section>
+
+<!-- SLIDE 4: PRIVACY FILTER PERFORMANCE -->
+<section data-transition="none">
+  <div class="section-label">Part 1.2</div>
+  <h2>OpenAI Privacy Filter</h2>
+
+  <div class="stat-row">
+    <div class="stat-card privacy">
+      <div class="label">Precision</div>
+      <div class="big-num">0.155</div>
+      <div class="detail">9 TP / 58 flagged</div>
+    </div>
+    <div class="stat-card privacy">
+      <div class="label">Recall</div>
+      <div class="big-num">1.0</div>
+      <div class="detail">Caught all 9</div>
+    </div>
+    <div class="stat-card harmful">
+      <div class="label">False Pos.</div>
+      <div class="big-num">49</div>
+      <div class="detail">1 in 6 flagged is real</div>
+    </div>
+  </div>
+
+  <h3>Over-Flagged Examples</h3>
+  <div class="example-cards">
+    <div class="example-card"><span class="ex-num">1</span> <span class="highlight">Athletes</span> mentioned in sports news articles</div>
+    <div class="example-card"><span class="ex-num">2</span> <span class="highlight">Politicians</span> in election coverage</div>
+    <div class="example-card"><span class="ex-num">3</span> <span class="highlight">Forum usernames</span> such as axboi87, placeholder names like Jane Doe and Bob Smith in a patent document</div>
+    <div class="example-card"><span class="ex-num">4</span> <span class="highlight">Religious scholars</span> in Islamic texts</div>
+  </div>
+
+  <div class="insight-box">
+    <strong>Root cause:</strong> Likely because of limited or ambiguous local context, a limitation also noted by OpenAI. Conservative by design (perfect recall, low precision). Adjusting this behaviour would require fine-tuning. Good for general data sanitation, but needs more work for a large pretraining corpus of wide variety.
+  </div>
+</section>
+
+<!-- SLIDE 5: REAL CASES & LIMITATIONS -->
+<section data-transition="none">
+  <div class="section-label">Part 1.1 & 1.2</div>
+  <h2>Real Cases & Critical Gaps</h2>
+
+  <h3>Manually Flagged Private (9) & Harmful (2)</h3>
+  <div class="example-cards">
+    <div class="example-card"><span class="ex-num">P</span> Exam candidate lists with roll numbers</div>
+    <div class="example-card"><span class="ex-num">P</span> Competition results with full names</div>
+    <div class="example-card"><span class="ex-num">P</span> Recruitment call letter with contact info (Indian Coast Guard)</div>
+    <div class="example-card"><span class="ex-num">H</span> Black-magic services ad (C4)</div>
+    <div class="example-card"><span class="ex-num">H</span> Gambling promotion page (RedPajama)</div>
+  </div>
+
+  <h3>Critical Limitations</h3>
+  <ul class="data-bullets">
+    <li><strong>No false negatives in sample.</strong> This does not mean the model is perfect because our sample size is very small.</li>
+    <li><strong>No harm detection:</strong> Filter only flags PII. Harmful content not caught (2 samples undetected)</li>
+    <li><strong>Annotation subjectivity:</strong> Public figure names are borderline; different annotators may differ</li>
+  </ul>
+
+  <div class="insight-box">
+    <strong>Critical gap:</strong> PII detection might not be enough for pretraining. The model does not have a flag for harmful content. Black-magic and gambling content passed through the filter undetected. Annotation is also subjective: whether a public figure's name counts as private is a borderline case.
+  </div>
+</section>
+
+<!-- SLIDE 6: CONCLUSIONS & RECOMMENDATIONS -->
+<section data-transition="none">
+  <div class="section-label">Part 1.1 & 1.2</div>
+  <h2>Conclusions & Recommendations</h2>
+
+  <h3>Key Takeaways</h3>
+  <ul class="data-bullets">
+    <li><strong>Data quality low:</strong> Mean 4.5/10, half requires cleaning</li>
+    <li><strong>Privacy leaks in PDFs:</strong> Institutional documents slip through</li>
+    <li><strong>Harmful content undetected:</strong> Separate classifiers needed</li>
+    <li><strong>Automated detection limited:</strong> Can't distinguish public figures from private PII</li>
+    <li><strong>Unexpected diversity:</strong> Different per-source distributions, multilingual unlabeled</li>
+  </ul>
+
+  <h3>For Better Curation</h3>
+  <ul class="data-bullets">
+    <li><strong>Multi-tier approach:</strong> Automated flagging + manual review + dataset policies</li>
+    <li><strong>Separate harm classifiers:</strong> Privacy filter only catches PII</li>
+    <li><strong>Language metadata:</strong> Flag non-English samples explicitly</li>
+    <li><strong>Source audit:</strong> Different sources have different failure modes</li>
+  </ul>
+
+  <div class="insight-box">
+    <strong>Bottom line:</strong> Hand-inspection reveals nuances automated tools miss: institutional leakage, harmful content, annotation subjectivity. PII detection alone is not enough for pretraining. Curation requires both automation and human judgment.
+  </div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+<script>
+Reveal.initialize({
+  hash: true,
+  transition: 'none',
+  transitionSpeed: 'fast',
+  controls: true,
+  progress: true,
+  slideNumber: true,
+  width: 1100,
+  height: 700,
+  margin: 0.04,
+  center: false,
+});
+</script>
+</body>
+</html>
